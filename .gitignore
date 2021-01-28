@@ -1,2 +1,5 @@
 # VS Code
 .vscode-settings
+
+# Don't include our binary
+lenslocked.com
