@@ -5,4 +5,7 @@
 lenslocked.com
 
 # ignore temp
-tmp
+**/tmp/*
+
+# ignore experimental folder
+**/exp/*
