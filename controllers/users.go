@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/schema"
 	"lenslocked.com/views"
 )
 
@@ -30,15 +31,30 @@ func (u *Users) New(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SignupForm is used to process incoming data from a web request
+//
+// don't use struct tags all the time
+type SignupForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
+}
+
 // Create is used to process the signup form when a user submits it. This is
 // used to create a new user account.
 //
 // POST /signup
 func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
+	// causes the PostForm to be filled
 	if err := r.ParseForm(); err != nil {
 		panic(err)
 	}
-	// r.PostForm = map[string][]string
-	fmt.Fprintln(w, r.PostForm["email"])
-	fmt.Fprintln(w, r.PostForm["password"])
+
+	// decode the PostForm into our SignupForm struct handled by gorilla/schema
+	dec := schema.NewDecoder()
+	var form SignupForm
+	if err := dec.Decode(&form, r.PostForm); err != nil {
+		panic(err)
+	}
+	fmt.Fprintln(w, form)
+
 }
